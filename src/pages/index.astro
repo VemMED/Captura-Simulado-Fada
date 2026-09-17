@@ -23,28 +23,75 @@ import "../styles/global.css";
         <img src="/assets/logo-vemmed.svg" alt="VemMED" width="247" height="190" />
       </a>
       <div class="contact-intro-copy">
-        <p class="eyebrow"><span>Simulado VemMED</span> prepare-se melhor</p>
-        <h1 id="contact-title">Seu próximo resultado começa com este simulado.</h1>
+        <p class="eyebrow"><span>Simulado autoral gratuito</span></p>
+        <h1 id="contact-title">Imprima, resolva e descubra onde melhorar.</h1>
         <p class="contact-subtitle">
-          Cadastre seus dados para receber acesso ao simulado e testar seus conhecimentos
-          com uma experiência criada para a sua preparação.
+          Receba um simulado autoral para imprimir e resolver no papel. Depois, insira
+          suas respostas no app e veja um relatório de desempenho com um material de revisão feito para você.
         </p>
       </div>
       <div class="contact-note">
         <span class="contact-note-mark" aria-hidden="true">✓</span>
-        <p><strong>Acesso rápido e gratuito.</strong><br />Faça o simulado e descubra onde focar seus estudos.</p>
+        <p><strong>Seu resultado vira um plano de revisão.</strong><br />Identifique seus pontos fortes e saiba o que estudar a seguir.</p>
       </div>
     </section>
 
     <section class="contact-form-panel" aria-labelledby="form-title">
       <div class="form-heading">
-        <p class="eyebrow">Garanta seu acesso</p>
-        <h2 id="form-title">Receba o seu simulado</h2>
-        <p>Preencha seus dados. Depois, você receberá as instruções para começar.</p>
+        <p class="eyebrow">Acesso gratuito</p>
+        <h2 id="form-title">Receba seu simulado</h2>
+        <p>Preencha seus dados para acessar o material e as instruções.</p>
       </div>
 
       <div class="mautic-form" id="mautic-form" aria-label="Cadastro para acesso ao simulado"></div>
       <script type="text/javascript" src="https://mautic.vemmed.com.br/form/generate.js?id=1"></script>
+      <script>
+        const normalizeFieldName = (name) =>
+          name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const isPhoneField = (field) => {
+          const normalizedName = normalizeFieldName(field.name || "");
+          return ["celular", "telefone", "phone", "mobile"].some((match) => normalizedName.includes(match));
+        };
+        const formatPhone = (value) => {
+          const digits = value.replace(/\D/g, "").slice(0, 11);
+          if (digits.length <= 2) return digits ? `(${digits}` : "";
+          if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+          if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+          return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+        };
+
+        document.addEventListener("input", (event) => {
+          const field = event.target;
+          if (!(field instanceof HTMLInputElement) || !isPhoneField(field)) return;
+          field.inputMode = "tel";
+          field.value = formatPhone(field.value);
+        }, true);
+
+        document.addEventListener("submit", (event) => {
+          const form = event.target.closest("#mautic-form form");
+          if (!form) return;
+
+          const fields = [...new FormData(form).entries()];
+          const getFieldValue = (matches) => {
+            const field = fields.find(([name]) => {
+              const normalizedName = normalizeFieldName(name);
+              return matches.some((match) => normalizedName.includes(match));
+            });
+            return typeof field?.[1] === "string" ? field[1].trim() : "";
+          };
+
+          fetch("https://flashmedradarquestoes.bubbleapps.io/api/1.1/wf/sign_up_simulado", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              nome: getFieldValue(["nome", "name"]),
+              email: getFieldValue(["email"]),
+              celular: getFieldValue(["celular", "telefone", "phone", "mobile"]).replace(/\D/g, ""),
+            }),
+            keepalive: true,
+          }).catch(() => undefined);
+        }, true);
+      </script>
     </section>
   </div>
 </main>
@@ -66,24 +113,24 @@ import "../styles/global.css";
   .contact-layout {
     position: relative;
     z-index: 1;
-    width: min(1100px, 100%);
+    width: min(1240px, 100%);
     display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+    grid-template-columns: minmax(0, 1.25fr) minmax(400px, 0.75fr);
     align-items: center;
-    gap: clamp(44px, 8vw, 110px);
+    gap: clamp(36px, 6vw, 76px);
   }
 
   .contact-brand { display: inline-flex; width: 86px; margin-bottom: clamp(42px, 8vw, 90px); }
   .contact-brand img { width: 100%; height: auto; object-fit: contain; }
-  .contact-intro-copy { max-width: 510px; }
+  .contact-intro-copy { max-width: 720px; }
   .contact-intro .eyebrow, .form-heading .eyebrow { margin-bottom: 18px; color: var(--turquoise-dark); font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
-  .eyebrow span { color: var(--green-dark); }
-  .contact-intro h1 { max-width: 520px; margin-bottom: 24px; font-family: var(--font-display); font-size: clamp(2.8rem, 5vw, 5rem); line-height: .98; letter-spacing: -.03em; }
-  .contact-subtitle { max-width: 450px; margin-bottom: 0; color: var(--ink-soft); font-size: clamp(1rem, 1.4vw, 1.12rem); line-height: 1.75; }
+  .contact-intro .eyebrow span { background: #19B2AB; color: var(--white); }
+  .contact-intro h1 { max-width: 700px; margin-bottom: 24px; font-family: var(--font-display); font-size: clamp(2.8rem, 5vw, 5rem); line-height: .98; letter-spacing: -.03em; }
+  .contact-subtitle { max-width: 620px; margin-bottom: 0; color: var(--ink-soft); font-size: clamp(1rem, 1.4vw, 1.12rem); line-height: 1.75; }
   .contact-note { display: flex; align-items: center; gap: 14px; margin-top: clamp(40px, 8vw, 80px); color: var(--ink-soft); font-size: .78rem; line-height: 1.5; }
   .contact-note p { margin: 0; }
   .contact-note strong { color: var(--ink); }
-  .contact-note-mark { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 50%; background: var(--yellow); color: var(--ink); font-family: var(--font-display); font-size: 1.7rem; transform: rotate(-8deg); }
+  .contact-note-mark { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 50%; background: #19B2AB; color: var(--white); font-family: var(--font-display); font-size: 1.7rem; transform: rotate(-8deg); }
   .contact-form-panel { padding: clamp(28px, 5vw, 54px); border: 1px solid rgba(16, 24, 43, .1); border-radius: 18px; background: rgba(255, 253, 248, .82); box-shadow: var(--shadow); backdrop-filter: blur(12px); }
   .form-heading h2 { margin-bottom: 10px; font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 3.1rem); line-height: 1; }
   .form-heading > p:last-child { margin-bottom: 34px; color: var(--ink-soft); font-size: .9rem; }
@@ -99,9 +146,9 @@ import "../styles/global.css";
   .form-footer .button span { margin-left: 10px; font-size: 1.1rem; }
   .form-privacy { margin: 0; color: var(--ink-soft); font-size: .7rem; line-height: 1.4; }
   .form-success { margin: 20px 0 0; padding: 12px 14px; border-left: 3px solid var(--green); background: rgba(22, 148, 71, .08); color: var(--green-dark); font-size: .8rem; font-weight: 700; }
-  .contact-decoration { position: absolute; border: 1px solid rgba(40, 200, 194, .3); pointer-events: none; }
+  .contact-decoration { position: absolute; border: 1px solid rgba(25, 178, 171, .3); pointer-events: none; }
   .contact-decoration-one { top: -100px; right: 8%; width: 260px; height: 260px; border-radius: 50%; }
-  .contact-decoration-two { bottom: 7%; left: 5%; width: 24px; height: 24px; border-color: var(--pink); transform: rotate(45deg); }
+  .contact-decoration-two { bottom: 7%; left: 5%; width: 24px; height: 24px; border-color: #19B2AB; transform: rotate(45deg); }
 
   @media (max-width: 820px) {
     .contact-page { padding-block: 32px 48px; }
