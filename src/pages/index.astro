@@ -68,8 +68,11 @@ import "../styles/global.css";
         }, true);
 
         document.addEventListener("submit", (event) => {
-          const form = event.target.closest("#mautic-form form");
+          const form = event.target.closest?.("#mautic-form form");
           if (!form) return;
+
+          event.preventDefault();
+          event.stopPropagation();
 
           const fields = [...new FormData(form).entries()];
           const getFieldValue = (matches) => {
@@ -80,16 +83,25 @@ import "../styles/global.css";
             return typeof field?.[1] === "string" ? field[1].trim() : "";
           };
 
+          const email = getFieldValue(["email"]);
+          const payload = {
+            nome: getFieldValue(["nome", "name"]),
+            email,
+            celular: getFieldValue(["celular", "telefone", "phone", "mobile"]).replace(/\D/g, ""),
+          };
+
           fetch("https://flashmedradarquestoes.bubbleapps.io/api/1.1/wf/sign_up_simulado", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              nome: getFieldValue(["nome", "name"]),
-              email: getFieldValue(["email"]),
-              celular: getFieldValue(["celular", "telefone", "phone", "mobile"]).replace(/\D/g, ""),
-            }),
+            body: JSON.stringify(payload),
             keepalive: true,
-          }).catch(() => undefined);
+          })
+            .finally(() => {
+              const destination = email
+                ? `https://spp.vemmed.com/obrigado?email=${encodeURIComponent(email)}`
+                : "https://spp.vemmed.com/obrigado";
+              window.location.href = destination;
+            });
         }, true);
       </script>
     </section>
