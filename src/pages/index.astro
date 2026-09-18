@@ -68,7 +68,7 @@ import "../styles/global.css";
         }, true);
 
         document.addEventListener("submit", (event) => {
-          const form = event.target.closest?.("#mautic-form form");
+          const form = event.target.closest?.('form[action*="/form/submit"]');
           if (!form) return;
 
           event.preventDefault();
