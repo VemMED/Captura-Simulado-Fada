@@ -5,12 +5,43 @@ import "../styles/global.css";
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width" />
+  <!-- Google Tag Manager -->
+  <script is:inline>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-MZDZ7LC2');</script>
+  <!-- End Google Tag Manager -->
+  <script is:inline async="true">
+    (function(w, d, s, u) {
+      w.vkPixel = w.vkPixel || { _q: [] };
+      w.vkPixel._q.push(['init', '2kK1IyLjkDzjAu1JDPPL']);
+      var js = d.createElement(s);
+      js.src = u;
+      js.async = true;
+      d.head.appendChild(js);
+    })(window, document, 'script', 'https://cf.vkdigital.com.br/pixel.js?v=55');
+  </script>
+  <script is:inline async="true">
+    (function(w, d, s, u) {
+      w.vkPageViewPixel = w.vkPageViewPixel || { _q: [] };
+      w.vkPageViewPixel._q.push(['init', '2kK1IyLjkDzjAu1JDPPL', 'page_view']);
+      var js = d.createElement(s);
+      js.src = u;
+      js.async = true;
+      d.head.appendChild(js);
+    })(window, document, 'script', 'https://cf.vkdigital.com.br/event_pageview.js');
+  </script>
   <link rel="icon" href="/assets/logo-vemmed.svg" type="image/svg+xml" />
   <meta name="theme-color" content="#f7f3eb" />
   <meta name="description" content="Inscreva-se para receber acesso ao Simulado VemMED." />
   <title>Acesso ao Simulado | VemMED</title>
 </head>
 
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MZDZ7LC2"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 <a class="skip-link" href="#contato">Pular para o cadastro do simulado</a>
 
 <main class="contact-page" id="contato">
@@ -98,8 +129,8 @@ import "../styles/global.css";
           })
             .finally(() => {
               const destination = email
-                ? `https://spp.vemmed.com/obrigado?email=${encodeURIComponent(email)}`
-                : "https://spp.vemmed.com/obrigado";
+                ? `https://spp.vemmed.com/obrigado?email=${encodeURIComponent(email)}&produto=simulado`
+                : "https://spp.vemmed.com/obrigado?produto=simulado";
               window.location.href = destination;
             });
         }, true);
