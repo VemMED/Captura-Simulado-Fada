@@ -109,7 +109,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           const getFieldValue = (matches) => {
             const field = fields.find(([name]) => {
               const normalizedName = normalizeFieldName(name);
-              return matches.some((match) => normalizedName.includes(match));
+              const fieldNames = normalizedName.match(/\[([^\]]+)\]/g)
+                ?.map((fieldName) => fieldName.slice(1, -1)) ?? [normalizedName];
+              return matches.some((match) => fieldNames.includes(match));
             });
             return typeof field?.[1] === "string" ? field[1].trim() : "";
           };
