@@ -109,6 +109,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           const getFieldValue = (matches) => {
             const field = fields.find(([name]) => {
               const normalizedName = normalizeFieldName(name);
+
               const fieldNames = normalizedName.match(/\[([^\]]+)\]/g)
                 ?.map((fieldName) => fieldName.slice(1, -1)) ?? [normalizedName];
               return matches.some((match) => fieldNames.includes(match));
@@ -131,8 +132,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           })
             .finally(() => {
               const destination = email
-                ? `https://spp.vemmed.com/obrigado?email=${encodeURIComponent(email)}&produto=simulado`
-                : "https://spp.vemmed.com/obrigado?produto=simulado";
+                ? `https://flashcardturbo.vemmed.com/obrigado?email=${encodeURIComponent(email)}&produto=simulado`
+                : "https://flashcardturbo.vemmed.com/obrigado?produto=simulado";
               window.location.href = destination;
             });
         }, true);
